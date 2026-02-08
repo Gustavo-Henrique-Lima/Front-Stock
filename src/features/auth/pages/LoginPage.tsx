@@ -19,7 +19,6 @@ export default function LoginPage() {
 
   const [authError, setAuthError] = useState<string | null>(null);
 
-  // 🔐 Sempre limpa sessão ao entrar no login
   useEffect(() => {
     logout();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,7 +65,7 @@ export default function LoginPage() {
 
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-              {/* 🔴 Erro do backend */}
+              {/* Erro do backend */}
               {authError && (
                 <Alert variant="destructive">
                   <AlertDescription>{authError}</AlertDescription>
