@@ -27,10 +27,6 @@ httpClient.interceptors.response.use(
       redirectTo('/401');
     }
 
-    if (status && status >= 500) {
-      redirectTo('/500');
-    }
-
     return Promise.reject(error);
   },
 );
