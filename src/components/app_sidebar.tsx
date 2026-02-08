@@ -18,7 +18,7 @@ import {
 const navItems = [
   { title: 'Produtos', href: '/products', icon: Package },
   { title: 'Matéria-prima', href: '/raw-materials', icon: Boxes },
-  { title: 'Produção', href: '/reports', icon: BarChart3 },
+  { title: 'Produção', href: '/production', icon: BarChart3 },
 ];
 
 export function AppSidebar() {
