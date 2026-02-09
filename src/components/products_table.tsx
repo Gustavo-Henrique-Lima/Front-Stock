@@ -33,14 +33,7 @@ export function ProductsTable({ products, onEdit, onDelete }: Props) {
         {products.map((product) => (
           <TableRow key={product.id} className="odd:bg-gray-100 even:bg-muted/40 hover:bg-muted">
             <TableCell>
-              <div className="flex flex-col">
-                <span className="font-medium">{product.name}</span>
-                {product.description && (
-                  <span className="text-xs text-muted-foreground line-clamp-1">
-                    {product.description}
-                  </span>
-                )}
-              </div>
+              <p>{product.name}</p>
             </TableCell>
 
             <TableCell>

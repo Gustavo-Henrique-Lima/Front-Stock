@@ -21,10 +21,6 @@ export function ProductCard({ product, onEdit, onDelete }: Props) {
 
       <p className="text-sm font-medium">R$ {product.price.toFixed(2)}</p>
 
-      {product.description && (
-        <p className="text-xs text-muted-foreground line-clamp-2">{product.description}</p>
-      )}
-
       <div className="flex justify-end gap-2 pt-2">
         <Button size="icon" variant="ghost" onClick={onEdit}>
           <Pencil className="h-4 w-4" />
