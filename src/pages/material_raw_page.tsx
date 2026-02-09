@@ -1,5 +1,5 @@
-import { Plus, Pencil, Trash2, Search, Boxes } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Plus, Pencil, Trash2, Boxes } from 'lucide-react';
+import { useState } from 'react';
 
 import { MaterialForm } from '@/components/MaterialForm';
 import {
@@ -14,9 +14,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import {
   Pagination,
   PaginationContent,
@@ -51,7 +50,6 @@ function StockBadge({ stock }: { stock: number }) {
 }
 
 export function MaterialsPage() {
-  const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [openForm, setOpenForm] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
@@ -91,11 +89,6 @@ export function MaterialsPage() {
     setDeleteTarget(null);
   }
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPage(0);
-  }, [search]);
-
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-hidden">
       {/* HEADER */}
@@ -114,21 +107,6 @@ export function MaterialsPage() {
       </div>
 
       <Card className="flex flex-1 flex-col overflow-hidden">
-        <CardHeader className="pb-2">
-          <div className="flex justify-between">
-            <CardTitle>Registro de matérias</CardTitle>
-            <div className="relative w-full max-w-xs">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar..."
-                className="pl-9"
-              />
-            </div>
-          </div>
-        </CardHeader>
-
         <CardContent className="flex-1 overflow-auto p-0">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">Carregando...</div>
