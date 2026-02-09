@@ -2,6 +2,7 @@ import { Plus, Pencil, Trash2, Boxes } from 'lucide-react';
 import { useState } from 'react';
 
 import { MaterialForm } from '@/components/MaterialForm';
+import { RawMaterialCard } from '@/components/raw_material_card';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,7 +15,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
   Pagination,
@@ -44,9 +45,9 @@ function StockBadge({ stock }: { stock: number }) {
     return <Badge variant="destructive">Out of Stock</Badge>;
   }
   if (stock < 20) {
-    return <Badge className="bg-warning text-warning-foreground">Low Stock</Badge>;
+    return <Badge className="bg-warning text-warning-foreground">Estoque baixo</Badge>;
   }
-  return <Badge className="bg-success text-success-foreground">In Stock</Badge>;
+  return <Badge className="bg-success text-success-foreground">Em estoque</Badge>;
 }
 
 export function MaterialsPage() {
@@ -107,7 +108,10 @@ export function MaterialsPage() {
       </div>
 
       <Card className="flex flex-1 flex-col overflow-hidden">
-        <CardContent className="flex-1 overflow-auto p-0">
+        <CardHeader className="gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <CardTitle>Estoque de matérias-primas</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 overflow-auto p-2">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">Carregando...</div>
           ) : materials.length === 0 ? (
@@ -116,53 +120,73 @@ export function MaterialsPage() {
               <p>Nenhuma matéria encontrada</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Matéria</TableHead>
-                  <TableHead className="hidden md:table-cell">Código</TableHead>
-                  <TableHead>Estoque</TableHead>
-                  <TableHead className="hidden sm:table-cell">Status</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              {/* Mobile */}
+              <div className="grid gap-4 sm:hidden">
                 {materials.map((material) => (
-                  <TableRow
+                  <RawMaterialCard
                     key={material.id}
-                    className="odd:bg-background even:bg-muted/40 hover:bg-muted"
-                  >
-                    <TableCell>{material.name}</TableCell>
-                    <TableCell className="hidden md:table-cell">{material.code}</TableCell>
-                    <TableCell>{material.stockQuantity}</TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                      <StockBadge stock={material.stockQuantity} />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setEditingMaterial(material);
-                          setOpenForm(true);
-                        }}
-                        className="cursor-pointer"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeleteTarget(material)}
-                        className="cursor-pointer"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                    material={material}
+                    onEdit={() => {
+                      setEditingMaterial(material);
+                      setOpenForm(true);
+                    }}
+                    onDelete={() => setDeleteTarget(material)}
+                  />
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+
+              {/* Desktop */}
+              <div className="hidden sm:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="px-4 py-3">Matéria</TableHead>
+                      <TableHead className="hidden md:table-cell">Código</TableHead>
+                      <TableHead>Estoque</TableHead>
+                      <TableHead className="hidden sm:table-cell">Status</TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {materials.map((material) => (
+                      <TableRow
+                        key={material.id}
+                        className="odd:bg-gray-200 even:bg-muted/40 hover:bg-muted"
+                      >
+                        <TableCell className="px-4 py-3">{material.name}</TableCell>
+                        <TableCell className="hidden md:table-cell">{material.code}</TableCell>
+                        <TableCell>{material.stockQuantity}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          <StockBadge stock={material.stockQuantity} />
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setEditingMaterial(material);
+                              setOpenForm(true);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteTarget(material)}
+                            className="cursor-pointer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

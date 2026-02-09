@@ -17,7 +17,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import type { Product } from '@/features/types/product';
 
 const mockProducts: Product[] = [
@@ -26,7 +25,7 @@ const mockProducts: Product[] = [
 ];
 
 export default function ProductsPage() {
-  const [search, setSearch] = useState('');
+  const [search] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Product | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
@@ -47,8 +46,6 @@ export default function ProductsPage() {
   function handleConfirmDelete() {
     if (!deleteTarget) return;
 
-    // 🔜 aqui depois entra deleteMutation.mutate(deleteTarget.id)
-    // por enquanto: só fecha
     setDeleteTarget(null);
   }
 
@@ -71,14 +68,7 @@ export default function ProductsPage() {
 
       <Card>
         <CardHeader className="gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle>Catálogo</CardTitle>
-          <div className="w-full sm:max-w-xs">
-            <Input
-              placeholder="Buscar produto..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+          <CardTitle>Estoque de produtos</CardTitle>
         </CardHeader>
 
         <CardContent>
@@ -107,7 +97,14 @@ export default function ProductsPage() {
 
       {/* CREATE / EDIT */}
       <Dialog open={formOpen || !!editing} onOpenChange={(open) => !open && closeDialog()}>
-        <DialogContent className="sm:max-w-2xl">
+        <DialogContent
+          className="
+            w-full
+            max-w-lg
+            max-h-[90vh]
+            overflow-y-auto
+          "
+        >
           <DialogHeader>
             <DialogTitle>{editing ? 'Editar produto' : 'Novo produto'}</DialogTitle>
           </DialogHeader>

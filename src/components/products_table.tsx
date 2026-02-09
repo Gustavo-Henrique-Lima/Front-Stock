@@ -31,7 +31,7 @@ export function ProductsTable({ products, onEdit, onDelete }: Props) {
 
       <TableBody>
         {products.map((product) => (
-          <TableRow key={product.id} className="odd:bg-background even:bg-muted/40">
+          <TableRow key={product.id} className="odd:bg-gray-100 even:bg-muted/40 hover:bg-muted">
             <TableCell>
               <div className="flex flex-col">
                 <span className="font-medium">{product.name}</span>
