@@ -66,7 +66,7 @@ export function MaterialForm({
       {/* Quantidade */}
       <div className="space-y-1">
         <Label htmlFor="stockQuantity">Quantidade em estoque</Label>
-        <Input id="stockQuantity" type="number" min={0} step="1" {...register('stockQuantity')} />
+        <Input id="stockQuantity" type="number" {...register('stockQuantity')} />
         {errors.stockQuantity && (
           <p className="text-xs text-destructive">{errors.stockQuantity.message as string}</p>
         )}

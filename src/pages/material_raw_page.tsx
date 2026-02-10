@@ -1,7 +1,8 @@
-import { Plus, Pencil, Trash2, Search, Boxes } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Plus, Pencil, Trash2, Boxes } from 'lucide-react';
+import { useState } from 'react';
 
 import { MaterialForm } from '@/components/MaterialForm';
+import { RawMaterialCard } from '@/components/raw_material_card';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +17,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import {
   Pagination,
   PaginationContent,
@@ -45,13 +45,12 @@ function StockBadge({ stock }: { stock: number }) {
     return <Badge variant="destructive">Out of Stock</Badge>;
   }
   if (stock < 20) {
-    return <Badge className="bg-warning text-warning-foreground">Low Stock</Badge>;
+    return <Badge className="bg-warning text-warning-foreground">Estoque baixo</Badge>;
   }
-  return <Badge className="bg-success text-success-foreground">In Stock</Badge>;
+  return <Badge className="bg-success text-success-foreground">Em estoque</Badge>;
 }
 
 export function MaterialsPage() {
-  const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [openForm, setOpenForm] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
@@ -91,11 +90,6 @@ export function MaterialsPage() {
     setDeleteTarget(null);
   }
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPage(0);
-  }, [search]);
-
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-hidden">
       {/* HEADER */}
@@ -103,7 +97,7 @@ export function MaterialsPage() {
         <div>
           <h1 className="text-2xl font-bold">Matéria-prima</h1>
           <p className="text-sm text-muted-foreground">
-            Acompanhe os níveis de estoque e os custos
+            Acompanhe os níveis de estoque da suas matérias-primas
           </p>
         </div>
 
@@ -114,22 +108,10 @@ export function MaterialsPage() {
       </div>
 
       <Card className="flex flex-1 flex-col overflow-hidden">
-        <CardHeader className="pb-2">
-          <div className="flex justify-between">
-            <CardTitle>Registro de matérias</CardTitle>
-            <div className="relative w-full max-w-xs">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar..."
-                className="pl-9"
-              />
-            </div>
-          </div>
+        <CardHeader className="gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <CardTitle>Estoque de matérias-primas</CardTitle>
         </CardHeader>
-
-        <CardContent className="flex-1 overflow-auto p-0">
+        <CardContent className="flex-1 overflow-auto p-2">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">Carregando...</div>
           ) : materials.length === 0 ? (
@@ -138,77 +120,105 @@ export function MaterialsPage() {
               <p>Nenhuma matéria encontrada</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Matéria</TableHead>
-                  <TableHead className="hidden md:table-cell">Código</TableHead>
-                  <TableHead>Estoque</TableHead>
-                  <TableHead className="hidden sm:table-cell">Status</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              {/* Mobile */}
+              <div className="grid gap-4 sm:hidden">
                 {materials.map((material) => (
-                  <TableRow
+                  <RawMaterialCard
                     key={material.id}
-                    className="odd:bg-background even:bg-muted/40 hover:bg-muted"
-                  >
-                    <TableCell>{material.name}</TableCell>
-                    <TableCell className="hidden md:table-cell">{material.code}</TableCell>
-                    <TableCell>{material.stockQuantity}</TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                      <StockBadge stock={material.stockQuantity} />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setEditingMaterial(material);
-                          setOpenForm(true);
-                        }}
-                        className="cursor-pointer"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeleteTarget(material)}
-                        className="cursor-pointer"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                    material={material}
+                    onEdit={() => {
+                      setEditingMaterial(material);
+                      setOpenForm(true);
+                    }}
+                    onDelete={() => setDeleteTarget(material)}
+                  />
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+
+              {/* Desktop */}
+              <div className="hidden sm:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="px-4 py-3">Matéria</TableHead>
+                      <TableHead className="hidden md:table-cell">Código</TableHead>
+                      <TableHead>Estoque</TableHead>
+                      <TableHead className="hidden sm:table-cell">Status</TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {materials.map((material) => (
+                      <TableRow
+                        key={material.id}
+                        className="odd:bg-gray-200 even:bg-muted/40 hover:bg-muted"
+                      >
+                        <TableCell className="px-4 py-3">{material.name}</TableCell>
+                        <TableCell className="hidden md:table-cell">{material.code}</TableCell>
+                        <TableCell>{material.stockQuantity}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          <StockBadge stock={material.stockQuantity} />
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setEditingMaterial(material);
+                              setOpenForm(true);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteTarget(material)}
+                            className="cursor-pointer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
 
       {/* PAGINATION */}
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious onClick={() => setPage((p) => Math.max(0, p - 1))} />
-          </PaginationItem>
-
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <PaginationItem key={i}>
-              <PaginationLink isActive={page === i} onClick={() => setPage(i)}>
-                {i + 1}
-              </PaginationLink>
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                className={page === 0 ? 'pointer-events-none opacity-50' : ''}
+              />
             </PaginationItem>
-          ))}
 
-          <PaginationItem>
-            <PaginationNext onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink isActive={page === i} onClick={() => setPage(i)}>
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                className={page === totalPages - 1 ? 'pointer-events-none opacity-50' : ''}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       {/* FORM */}
       <Dialog open={openForm} onOpenChange={setOpenForm}>

@@ -2,6 +2,7 @@ import { httpClient } from '../client';
 
 import type { PageResponse } from '@/features/types/page_response';
 import type { Material } from '@/features/types/raw-material';
+import type { RawMaterialAssociate } from '@/features/types/raw_material_associate';
 import type { MaterialFormData } from '@/schemas/material.schema';
 
 export async function listRawMaterials(
@@ -33,4 +34,10 @@ export async function updateRawMaterial(id: string, payload: MaterialFormData): 
 
 export async function deleteRawMaterial(id: string): Promise<void> {
   await httpClient.delete(`/api/raw-materials/${id}`);
+}
+
+export async function listRawMaterialsToAssociate(): Promise<RawMaterialAssociate[]> {
+  const { data } = await httpClient.get<RawMaterialAssociate[]>('/api/raw-materials/to-associate');
+
+  return data;
 }
