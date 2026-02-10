@@ -40,7 +40,7 @@ export function ProductionSimulationPage() {
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold">Simulação de Produção</h1>
         <p className="text-sm text-muted-foreground">
-          Com o estoque atual de matérias-primas, é possível produzir os seguintes produtos:
+          Com o estoque atual de matérias-primas, é possível produzir os seguintes produtos
         </p>
       </div>
 
@@ -89,7 +89,7 @@ export function ProductionSimulationPage() {
           <CardTitle className="text-sm">Produtos possíveis de fabricar</CardTitle>
         </CardHeader>
 
-        <CardContent className="p-0">
+        <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
@@ -103,7 +103,10 @@ export function ProductionSimulationPage() {
 
             <TableBody>
               {data.items.map((item) => (
-                <TableRow key={item.productId}>
+                <TableRow
+                  key={item.productId}
+                  className="odd:bg-gray-100 even:bg-muted/40 hover:bg-muted"
+                >
                   <TableCell className="font-medium">{item.productName}</TableCell>
                   <TableCell>
                     <code className="rounded bg-muted px-2 py-0.5 text-xs">{item.productCode}</code>
