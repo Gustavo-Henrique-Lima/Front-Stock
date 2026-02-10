@@ -97,7 +97,7 @@ export function MaterialsPage() {
         <div>
           <h1 className="text-2xl font-bold">Matéria-prima</h1>
           <p className="text-sm text-muted-foreground">
-            Acompanhe os níveis de estoque e os custos
+            Acompanhe os níveis de estoque da suas matérias-primas
           </p>
         </div>
 
@@ -192,25 +192,33 @@ export function MaterialsPage() {
       </Card>
 
       {/* PAGINATION */}
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious onClick={() => setPage((p) => Math.max(0, p - 1))} />
-          </PaginationItem>
-
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <PaginationItem key={i}>
-              <PaginationLink isActive={page === i} onClick={() => setPage(i)}>
-                {i + 1}
-              </PaginationLink>
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                className={page === 0 ? 'pointer-events-none opacity-50' : ''}
+              />
             </PaginationItem>
-          ))}
 
-          <PaginationItem>
-            <PaginationNext onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink isActive={page === i} onClick={() => setPage(i)}>
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                className={page === totalPages - 1 ? 'pointer-events-none opacity-50' : ''}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       {/* FORM */}
       <Dialog open={openForm} onOpenChange={setOpenForm}>

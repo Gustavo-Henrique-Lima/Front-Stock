@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ProductMaterialSelect } from './product_material_select';
 import { ProductMaterialsList } from './product_materials_list';
@@ -9,15 +9,44 @@ import { Input } from '@/components/ui/input';
 import type { Product } from '@/features/types/product';
 import type { ProductMaterial } from '@/features/types/product-material';
 import { useRawMaterialsToAssociate } from '@/hooks/raw-materials/use-raw-materials-to-associate';
-
 interface Props {
+  mode: 'create' | 'edit';
   product?: Product;
-  onSubmit: (data: Omit<Product, 'id'> & { materials: ProductMaterial[] }) => void;
+  initialMaterials?: ProductMaterial[];
+  onSubmit: (data: {
+    code: string;
+    name: string;
+    price: number;
+    materials: ProductMaterial[];
+  }) => void | Promise<void>;
   onCancel: () => void;
 }
-export function ProductForm({ product, onSubmit, onCancel }: Props) {
+
+export function ProductForm({ mode, product, initialMaterials = [], onSubmit, onCancel }: Props) {
   const { data: rawMaterials, isLoading } = useRawMaterialsToAssociate();
+
+  const [code, setCode] = useState('');
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState<number | ''>('');
   const [materials, setMaterials] = useState<ProductMaterial[]>([]);
+
+  useEffect(() => {
+    if (mode === 'edit' && product) {
+      setCode(product.code);
+      setName(product.name);
+      setPrice(product.price);
+      setMaterials(initialMaterials);
+      return;
+    }
+
+    if (mode === 'create') {
+      setCode('');
+      setName('');
+      setPrice('');
+      setMaterials([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, product?.id]);
 
   function handleAddMaterial(rawMaterialId: number) {
     const rawMaterial = rawMaterials?.find((m) => m.id === rawMaterialId);
@@ -38,7 +67,7 @@ export function ProductForm({ product, onSubmit, onCancel }: Props) {
   }
 
   function handleChangeQuantity(rawMaterialId: number, quantity: number) {
-    if (quantity <= 0) return;
+    if (quantity < 0) return;
 
     setMaterials((prev) =>
       prev.map((m) =>
@@ -47,50 +76,55 @@ export function ProductForm({ product, onSubmit, onCancel }: Props) {
     );
   }
 
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
 
-        onSubmit({
-          code: 'P001',
-          name: 'Produto Exemplo',
-          price: 100,
-          materials,
-        });
-      }}
-      className="space-y-6"
-    >
-      {/* DADOS DO PRODUTO */}
+    onSubmit({
+      code,
+      name,
+      price: price === '' ? 0 : price,
+      materials,
+    });
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* ===== PRODUCT DATA ===== */}
       <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2">
-        <Input placeholder="Código" defaultValue={product?.code} />
-        <Input placeholder="Nome" defaultValue={product?.name} />
+        <Input
+          placeholder="Código"
+          value={code}
+          disabled={mode === 'edit'}
+          onChange={(e) => setCode(e.target.value)}
+        />
+
+        <Input placeholder="Nome" value={name} onChange={(e) => setName(e.target.value)} />
+
         <Input
           type="number"
           placeholder="Preço"
-          defaultValue={product?.price}
+          value={price}
+          onChange={(e) => {
+            const value = e.target.value;
+            setPrice(value === '' ? '' : Number(value));
+          }}
           className="sm:col-span-2"
         />
       </div>
 
-      {/* BOM */}
       <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Matérias-primas</CardTitle>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-4">
-          {/* SELECT + BOTÃO */}
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-            <ProductMaterialSelect
-              availableMaterials={rawMaterials ?? []}
-              selectedMaterials={materials}
-              loading={isLoading}
-              onAdd={handleAddMaterial}
-            />
-          </div>
+          <ProductMaterialSelect
+            availableMaterials={rawMaterials ?? []}
+            selectedMaterials={materials}
+            loading={isLoading}
+            onAdd={handleAddMaterial}
+          />
 
-          {/* LISTA COM SCROLL */}
           <ProductMaterialsList
             materials={materials}
             onRemove={handleRemoveMaterial}
@@ -99,11 +133,12 @@ export function ProductForm({ product, onSubmit, onCancel }: Props) {
         </CardContent>
       </Card>
 
-      {/* ACTIONS */}
+      {/* ===== ACTIONS ===== */}
       <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
         <Button type="button" variant="outline" onClick={onCancel} className="w-full sm:w-auto">
           Cancelar
         </Button>
+
         <Button type="submit" className="w-full sm:w-auto">
           Salvar
         </Button>

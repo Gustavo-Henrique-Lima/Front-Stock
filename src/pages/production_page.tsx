@@ -40,7 +40,7 @@ export function ProductionSimulationPage() {
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold">Simulação de Produção</h1>
         <p className="text-sm text-muted-foreground">
-          Com o estoque atual de matérias-primas, é possível produzir os seguintes produtos:
+          Com o estoque atual de matérias-primas, é possível produzir os seguintes produtos
         </p>
       </div>
 
