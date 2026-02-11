@@ -1,73 +1,145 @@
-# React + TypeScript + Vite
+# InsuMax - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend da aplicação **InsuMax**, responsável pelo gerenciamento de
+produtos e matérias-primas.
 
-Currently, two official plugins are available:
+Aplicação construída com:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   React
+-   Vite
+-   TypeScript
+-   TailwindCSS
+-   React Query
+-   Zod
+-   Docker
 
-## React Compiler
+# Como rodar o projeto localmente
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Pré-requisitos
 
-## Expanding the ESLint configuration
+-   Node.js 18+ ou 20+
+-   NPM 9+
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Clonando o repositório
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Via HTTP
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+``` bash
+git clone https://github.com/seu-usuario/insumax-front.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Via SSH
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+``` bash
+git clone git@github.com:seu-usuario/insumax-front.git
 ```
+
+## Acesse o diretório
+
+``` bash
+cd insumax-front
+```
+
+## Instale as dependências
+
+``` bash
+npm install
+```
+
+ou
+
+``` bash
+npm i
+```
+
+## Configurar variáveis de ambiente
+
+Crie um arquivo `.env` com o seguinte conteúdo na raiz do projeto:
+
+``` env
+VITE_API_BASE_URL=http://localhost:8080/
+VITE_APP_NAME=InsuMax
+VITE_OAUTH_CLIENT_ID=myclientid
+VITE_OAUTH_CLIENT_SECRET=myclientsecret
+```
+
+> Todas as variáveis precisam começar com `VITE_` para serem
+> acessíveis no Vite.
+
+## Rodar o projeto
+
+``` bash
+npm run dev
+```
+
+Acesse:
+
+    http://localhost:5173
+
+
+# Build para produção
+
+``` bash
+npm run build
+```
+
+# Rodando com Docker
+
+## Build da imagem
+
+``` bash
+docker build   --build-arg VITE_API_BASE_URL=http://localhost:8080   --build-arg VITE_APP_NAME=InsuMax   --build-arg VITE_OAUTH_CLIENT_ID=myclientid   --build-arg VITE_OAUTH_CLIENT_SECRET=myclientsecret   -t insumax-front .
+```
+
+
+## Executar o container
+
+``` bash
+docker run -p 5173:80 insumax-front
+```
+
+Acesse:
+
+    http://localhost:5173
+
+
+# Rodando via Docker Hub (Pull)
+
+Caso a imagem esteja publicada no Docker Hub:
+
+``` bash
+docker pull seu-usuario/insumax-front:latest
+```
+
+Executar:
+
+``` bash
+docker run -p 3000:80 seu-usuario/insumax-front:latest
+```
+
+
+# Estrutura do Projeto
+
+    src/
+     ├── components/
+     ├── hooks/
+     ├── services/
+     ├── features/
+     ├── schemas/
+     ├── pages/
+     └── App.tsx
+
+# Integração com Backend
+
+A aplicação consome uma API REST configurada via:
+
+    VITE_API_BASE_URL
+
+#  Observações Importantes
+
+-   Variáveis `VITE_` são injetadas no momento do build.
+-   Alterações nas variáveis exigem novo build.
+-   Client Secret não deve ser exposto em produção real.
+
+
