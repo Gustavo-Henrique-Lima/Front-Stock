@@ -1,5 +1,5 @@
 import { Factory, Package, Boxes, BarChart3, LogOut } from 'lucide-react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 import {
   Sidebar,
@@ -23,6 +23,11 @@ const navItems = [
 
 export function AppSidebar() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    navigate('/');
+  }
 
   return (
     <Sidebar
@@ -96,9 +101,11 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
+              onClick={handleLogout}
               className="
                 rounded-lg px-3 py-2 text-sidebar-muted
-                hover:bg-red-500/10 hover:text-red-400
+                hover:bg-red-400/10 hover:text-red-300
+                cursor-pointer
               "
             >
               <LogOut className="h-4 w-4" />
