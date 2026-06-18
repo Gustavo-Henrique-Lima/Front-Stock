@@ -5,7 +5,6 @@ produtos e matérias-primas.
 
 Aplicação construída com:
 
--   React
 -   Vite
 -   TypeScript
 -   TailwindCSS
